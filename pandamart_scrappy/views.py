@@ -12,6 +12,7 @@ from fake_useragent import UserAgent
 
 # Create your views here.
 
+# API SUMMARY
 # /////////////////////////////////////////////////////////////////////////////
 # @DESC            GET DATA LIST FROM PANDAMART URLS
 # @ROUTE           POST: http://{server_ip:port}/pandamart/pandamart_scrappy/
@@ -27,28 +28,39 @@ class PandamartScrapperView(viewsets.ModelViewSet):
             urls = ["https://www.foodpanda.com.bd/darkstore/w2lx/pandamart-gulshan-w2lx",
                     "https://www.foodpanda.com.bd/darkstore/h9jp/pandamart-mirpur"]
 
-            ua = UserAgent()  # Initializing Fake User agent
-            user_agent = ua.random  # Setting a random user agent
+            # Initializing Fake User agent & Setting a random user agent
+            ua = UserAgent()
+            user_agent = ua.random
 
-            options = webdriver.ChromeOptions()  # Adding argument to disable the AutomationControlled flag
+            options = webdriver.ChromeOptions()
 
-            options.add_argument("start-maximized")  # setting options to start the browser maximized so that all the products are loaded
-            options.add_experimental_option("excludeSwitches", [
-                "enable-automation"])  # Exclude the collection of enable-automation switches as a part of preventing antibot detection
-            options.add_experimental_option('useAutomationExtension', False)  # Turn-off userAutomationExtension as a part of preventing antibot detection
-            options.add_argument(
-                "--disable-blink-features=AutomationControlled")  # Adding argument to disable the AutomationControlled flag as a part of preventing antibot detection
-            options.add_argument(f'user-agent={user_agent}')  # Adding the generated random user agent to browser
-            driver = webdriver.Chrome(options=options)  # Setting the driver with options
-            driver.set_window_size(1915, 1070)  # setting custom window size of the browser
+            # setting options to start the browser maximized so that all the products are loaded
+            options.add_argument("start-maximized")
 
-            # kill_popup method to close the pop up modal about address
-            #########################################
-            # The method takes the pop up element as a parameter
-            # The method then finds the close button element withing the pop up element
-            # Then the button is clicked
-            #########################################
+            # Exclude the collection of enable-automation switches and Turn-off userAutomationExtension as a part of preventing antibot detection
+            options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            options.add_experimental_option('useAutomationExtension', False)
+            # Adding argument to disable the AutomationControlled flag as a part of preventing antibot detection
+            options.add_argument("--disable-blink-features=AutomationControlled")
+
+            # Adding the generated random user agent to browser
+            options.add_argument(f'user-agent={user_agent}')
+
+            # Setting the driver with options and setting custom window size of the browser
+            driver = webdriver.Chrome(options=options)
+            driver.set_window_size(1915, 1070)
+
             def kill_popup(element):
+                """ method to close the pop up modal about address
+                :arg
+                    element (str): The popup module element.
+
+                :functions
+                    The method then finds the close button element withing the pop up element
+                    Then the button is clicked
+
+                :returns None"""
+
                 pop_up = element
                 pop_up_close_btn = pop_up[0].find_element(By.CLASS_NAME, "groceries-modal-close-button")
                 pop_up_close_btn.click()
@@ -63,8 +75,9 @@ class PandamartScrapperView(viewsets.ModelViewSet):
 
                 time.sleep(random_number)  # pausing the program to mimic a human activity
 
-                if len(driver.find_elements(By.CLASS_NAME, 'no-address-modal')) > 0:  # checking for existence of address pop up modal
-                    kill_popup(driver.find_elements(By.CLASS_NAME, 'no-address-modal'))  # calling the kill_popup method to close it
+                # checking for existence of address pop up modal & calling the kill_popup method to close it
+                if len(driver.find_elements(By.CLASS_NAME, 'no-address-modal')) > 0:
+                    kill_popup(driver.find_elements(By.CLASS_NAME, 'no-address-modal'))
 
                 search_field = driver.find_element(By.XPATH,
                                                    '//div[@class="darkstore-container"]//input[@data-testid="search-input"]')  # finding the search field
