@@ -87,8 +87,9 @@ class PandamartScrapperView(viewsets.ModelViewSet):
 
                 time.sleep(random_number)  # pausing the program to mimic a human activity
 
-                if len(driver.find_elements(By.CLASS_NAME, 'no-address-modal')) > 0:  # checking for existence of address pop up modal
-                    kill_popup(driver.find_elements(By.CLASS_NAME, 'no-address-modal'))  # calling the kill_popup method to close it
+                # checking for existence of address pop up modal & calling the kill_popup method to close it
+                if len(driver.find_elements(By.CLASS_NAME, 'no-address-modal')) > 0:
+                    kill_popup(driver.find_elements(By.CLASS_NAME, 'no-address-modal'))
 
                 try:
                     all_items = wait(driver, 2).until(EC.visibility_of_all_elements_located(
@@ -98,15 +99,19 @@ class PandamartScrapperView(viewsets.ModelViewSet):
                     continue  # continue to the next url or end the loop if 0 items are found
 
                 for item in all_items:
-                    count = len(item.find_elements(By.CLASS_NAME, 'product-card-price-before-discount'))  # checking if product has a discounted price
-                    price_count = len(item.find_elements(By.CLASS_NAME, 'product-card-price'))  # checking if product has a price to state its availability
+                    # checking if product has a price element to state its availability
+                    price_element_count = len(item.find_elements(By.CLASS_NAME, 'product-card-price'))
 
+                    # checking if product has a discounted price element
+                    count = len(item.find_elements(By.CLASS_NAME, 'product-card-price-before-discount'))
+                    # if the discount price is not available, set the price from the price element
                     if count == 0:
-                        price = item.find_element(By.CLASS_NAME, 'product-card-price').text  # if the discount price is not available, set the price from the price element
+                        price = item.find_element(By.CLASS_NAME, 'product-card-price').text
+                    # if the discount price is available, set the price from the discounted price element
                     else:
-                        price = item.find_element(By.CLASS_NAME, 'product-card-price-before-discount').text  # if the discount price is available, set the price from the discounted price element
+                        price = item.find_element(By.CLASS_NAME, 'product-card-price-before-discount').text
 
-                    # setting the response data for each item in a dict
+                    # processing the response data for each item in a dict and saving it in a list
                     item_details = {
                         'title': item.find_element(By.CLASS_NAME, 'product-card-name').text,
                         'url': item.find_element(By.CLASS_NAME, 'product-card-nav-wrapper').get_attribute('href'),
@@ -117,16 +122,16 @@ class PandamartScrapperView(viewsets.ModelViewSet):
                                 1].capitalize(),
                         'price': price,
                         'priceAfterDiscount': item.find_element(By.CLASS_NAME, 'product-card-price').text,
-                        'stockStatus ': 'IN STOCK' if price_count > 0 else 'OUT OF STOCK'
+                        'stockStatus ': 'IN STOCK' if price_element_count > 0 else 'OUT OF STOCK'
                     }
-
                     all_item_details.append(item_details)
 
                 time.sleep(2.5)  # pausing the program to mimic a human activity
                 if url_count != len(urls)-1:
                     time.sleep(random_number2)  # pausing the program to mimic a human activity
 
-            driver.quit()  # quitting the driver
+            # quitting the driver to close the browser
+            driver.quit()
 
             response = {
                 "statusCode": status.HTTP_200_OK,
