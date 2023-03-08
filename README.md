@@ -1,5 +1,19 @@
 # WebScrapperService
-This is a repository intended for completing a task provided by ManushTech
+This is a repository intended for completing a task provided by Manush Tech.
+
+The project is an API that will take a "keyword" from the request and search for it in the given urls of Pandamart (Gulshan: [https://www.foodpanda.com.bd/darkstore/w2lx/pandamart-gulshan-w2lx](https://www.foodpanda.com.bd/darkstore/w2lx/pandamart-gulshan-w2lx),
+Mirpur : [https://www.foodpanda.com.bd/darkstore/h9jp/pandamart-mirpur](https://www.foodpanda.com.bd/darkstore/h9jp/pandamart-mirpur)). After searching it will respond with the data in the format of  
+
+{    
+		"darkStore" : "location",    
+		"title" : "product name",    
+		"url" : "product url",    
+		"price" : "product price",    
+		"priceAfterDiscount" : "product discounted price",    
+		"stockStatus" : "product availability"  IN STOCK / OUT OF STOCK    
+}    
+
+in a list.
 
 # Setup Guide:
 Requirements:
