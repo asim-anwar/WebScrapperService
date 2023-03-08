@@ -6,7 +6,7 @@ Requirements:
 - Python 3.9 or higher
 - In order to use the API, you will need to have Chrome browser installed on the machine where the code will run. 
 Chrome installation guide: 
-    - https://support.google.com/chrome/a/answer/9025903?hl=en (Linux), 
+    - https://linuxconfig.org/how-to-install-google-chrome-browser-on-linux (Linux), 
     - https://www.google.com/chrome/ (Windows)
 - pip version 21.1.2
 
