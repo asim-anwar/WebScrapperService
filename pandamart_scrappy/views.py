@@ -50,21 +50,6 @@ class PandamartScrapperView(viewsets.ModelViewSet):
             driver = webdriver.Chrome(options=options)
             driver.set_window_size(1915, 1070)
 
-            def kill_popup(element):
-                """ method to close the pop up modal about address
-                :arg
-                    element (str): The popup module element.
-
-                :functions
-                    The method then finds the close button element withing the pop up element
-                    Then the button is clicked
-
-                :returns None"""
-
-                pop_up = element
-                pop_up_close_btn = pop_up[0].find_element(By.CLASS_NAME, "groceries-modal-close-button")
-                pop_up_close_btn.click()
-
             all_item_details = []  # list initiated for storing all item and their details
 
             random_number = random.randint(1, 3)
@@ -79,17 +64,29 @@ class PandamartScrapperView(viewsets.ModelViewSet):
                 if len(driver.find_elements(By.CLASS_NAME, 'no-address-modal')) > 0:
                     kill_popup(driver.find_elements(By.CLASS_NAME, 'no-address-modal'))
 
-                search_field = driver.find_element(By.XPATH,
-                                                   '//div[@class="darkstore-container"]//input[@data-testid="search-input"]')  # finding the search field
+                # finding the search field and searching for the keyword
+                search_field = driver.find_element(By.XPATH, '//div[@class="darkstore-container"]//input[@data-testid="search-input"]')
                 search_field.send_keys(request.data["keyword"])  # entering the keyword in the search field
                 time.sleep(0.75)  # pausing the program to mimic a human activity
-                search_field.send_keys(Keys.RETURN)  # pressing enter to search
+                search_field.send_keys(Keys.RETURN)  # pressing enter key to search
 
                 time.sleep(random_number)  # pausing the program to mimic a human activity
 
                 # checking for existence of address pop up modal & calling the kill_popup method to close it
                 if len(driver.find_elements(By.CLASS_NAME, 'no-address-modal')) > 0:
                     kill_popup(driver.find_elements(By.CLASS_NAME, 'no-address-modal'))
+
+                time.sleep(0.75)  # pausing the program to mimic a human activity
+
+                # measuring page height and scrolling to the end to load all products
+                last_height = driver.execute_script("return document.body.scrollHeight")
+                while True:
+                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                    time.sleep(0.5)  # wait for the page to load
+                    new_height = driver.execute_script("return document.body.scrollHeight")
+                    if new_height == last_height:
+                        break
+                    last_height = new_height
 
                 try:
                     all_items = wait(driver, 2).until(EC.visibility_of_all_elements_located(
@@ -126,6 +123,7 @@ class PandamartScrapperView(viewsets.ModelViewSet):
                     }
                     all_item_details.append(item_details)
 
+                print(len(all_item_details))
                 time.sleep(2.5)  # pausing the program to mimic a human activity
                 if url_count != len(urls)-1:
                     time.sleep(random_number2)  # pausing the program to mimic a human activity
@@ -150,3 +148,17 @@ class PandamartScrapperView(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
+def kill_popup(element):
+    """ method to close the pop up modal about address
+    :arg
+        element: The popup module element.
+
+    :functions
+        The method then finds the close button element withing the pop up element
+        Then the button is clicked
+
+    :returns None"""
+
+    pop_up = element
+    pop_up_close_btn = pop_up[0].find_element(By.CLASS_NAME, "groceries-modal-close-button")
+    pop_up_close_btn.click()
