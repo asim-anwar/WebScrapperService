@@ -122,8 +122,7 @@ class PandamartScrapperView(viewsets.ModelViewSet):
                         'stockStatus ': 'IN STOCK' if price_element_count > 0 else 'OUT OF STOCK'
                     }
                     all_item_details.append(item_details)
-
-                print(len(all_item_details))
+                    
                 time.sleep(2.5)  # pausing the program to mimic a human activity
                 if url_count != len(urls)-1:
                     time.sleep(random_number2)  # pausing the program to mimic a human activity
