@@ -1,2 +1,0 @@
-# Important Note:
-The API does not work all the time as I could not avoid antibots. So if the API does not work at first, please keep trying until it works.

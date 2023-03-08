@@ -1,0 +1,6 @@
+# Important Note:
+The API does not work all the time as I could not avoid antibots. So if the API does not work at first, please keep trying until it works.
+
+I have saved some successful responses in files and uploaded in the repository. Feel free to look into them. The files start with the name response.
+
+Thank you for assigning the task. I had fun doing it :D
