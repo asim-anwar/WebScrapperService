@@ -23,6 +23,6 @@ Guide:
 
 # Requesting the API:
 To request the api from Postman - 
-  - Method: GET,
+  - Method: POST,
   - URL: http://{server_ip:port}/pandamart/pandamart_scrappy/,
   - Body: { "keyword": "Dettol" }
